@@ -9,10 +9,7 @@ import javax.persistence.*;
 @Table(name = "MEMBER")
 @Getter
 public class Member {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private Long id;
-
+    @Id
     @Column(name = "MEMBER_ID", nullable = false)
     private String memberId;
 
@@ -26,7 +23,8 @@ public class Member {
     private String bankAccount;
 
     @Column(name = "GRADE")
-    private String grade;
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
 
     @Column(name = "POINT")
     private Long point;
@@ -51,7 +49,7 @@ public class Member {
 
     @PrePersist
     private void prePersist() {
-        if (this.grade == null) grade = "BRONZE";
+        if (this.grade == null) grade = Grade.BRONZE;
         if (this.point == null) point = 0L;
         if (this.exp == null) exp = 0L;
         if (this.partyInviteYn == null) partyInviteYn = "Y";
