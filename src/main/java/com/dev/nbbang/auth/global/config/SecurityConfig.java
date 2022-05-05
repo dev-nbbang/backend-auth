@@ -1,8 +1,8 @@
-package com.dev.nbbang.auth.config;
+package com.dev.nbbang.auth.global.config;
 
 import com.dev.nbbang.auth.filter.JwtAuthenticationFilter;
-import com.dev.nbbang.auth.util.JwtUtil;
-import com.dev.nbbang.auth.util.RedisUtil;
+import com.dev.nbbang.auth.global.util.JwtUtil;
+import com.dev.nbbang.auth.global.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,9 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/**").anonymous()
                 .anyRequest().authenticated()
                 .and()
-                .cors().configurationSource(corsConfigurationSource())
-                .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class);
+                .cors().configurationSource(corsConfigurationSource());
+//                .and()
+//                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

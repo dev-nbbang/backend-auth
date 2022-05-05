@@ -1,4 +1,4 @@
-package com.dev.nbbang.auth.controller;
+package com.dev.nbbang.auth.authentication.controller;
 
 import com.dev.nbbang.auth.api.dto.AuthResponse;
 import com.dev.nbbang.auth.api.entity.SocialLoginType;
@@ -6,12 +6,13 @@ import com.dev.nbbang.auth.api.exception.FailCreateAuthUrlException;
 import com.dev.nbbang.auth.api.exception.IllegalSocialTypeException;
 import com.dev.nbbang.auth.api.util.SocialAuthUrl;
 import com.dev.nbbang.auth.api.util.SocialTypeMatcher;
+import com.dev.nbbang.auth.authentication.service.MemberService;
 import com.dev.nbbang.auth.dto.MemberDTO;
 import com.dev.nbbang.auth.dto.response.MemberLoginInfoResponse;
-import com.dev.nbbang.auth.exception.NoSuchMemberException;
+import com.dev.nbbang.auth.dto.response.MemberRegisterResponse;
+import com.dev.nbbang.auth.authentication.exception.NoSuchMemberException;
 import com.dev.nbbang.auth.global.response.CommonResponse;
-import com.dev.nbbang.auth.service.MemberService;
-import com.dev.nbbang.auth.util.JwtUtil;
+import com.dev.nbbang.auth.global.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,8 +30,7 @@ import java.io.IOException;
 public class AuthController {
     private final MemberService memberService;
     private final SocialTypeMatcher socialTypeMatcher;
-    private final JwtUtil jwtUtil;
-
+    private final TokenService tokenService;
     @GetMapping(value = "/{socialLoginType}/test")
 //    @Operation(summary = "백엔드 소셜 로그인 인가 코드 요청", description = "백엔드 소셜 로그인 인가 코드 요청 테스트")
     public void test(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType, HttpServletResponse httpServletResponse) throws IOException {
@@ -77,9 +77,8 @@ public class AuthController {
 
             // 회원 닉네임 수정 시 JWT 새로 생성 및 레디스 값 갱신 (프론트
             // 구현 후 넣어주기)
-            String accessToken = memberService.manageToken(findMember);
-            servletResponse.setHeader("Authorization", "Bearer " + accessToken);
-            System.out.println("accessToken = " + accessToken);
+            String accessToken = tokenService.manageToken(findMember.getMemberId(), findMember.getNickname());
+            servletResponse.setHeader("Authorization" ,"Bearer "+accessToken);
 
             return new ResponseEntity<>(MemberLoginInfoResponse.create(findMember, true,true, "소셜 로그인에 성공했습니다."), HttpStatus.OK);
         } catch (NoSuchMemberException e) {

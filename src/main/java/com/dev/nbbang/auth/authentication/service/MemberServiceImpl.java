@@ -1,16 +1,14 @@
-package com.dev.nbbang.auth.service;
+package com.dev.nbbang.auth.authentication.service;
 
 import com.dev.nbbang.auth.api.entity.SocialLoginType;
 import com.dev.nbbang.auth.api.service.SocialOauth;
 import com.dev.nbbang.auth.api.util.SocialLoginIdUtil;
 import com.dev.nbbang.auth.api.util.SocialTypeMatcher;
 import com.dev.nbbang.auth.dto.MemberDTO;
-import com.dev.nbbang.auth.entity.Member;
+import com.dev.nbbang.auth.authentication.entity.Member;
 import com.dev.nbbang.auth.global.exception.NbbangException;
-import com.dev.nbbang.auth.exception.NoSuchMemberException;
-import com.dev.nbbang.auth.repository.MemberRepository;
-import com.dev.nbbang.auth.util.JwtUtil;
-import com.dev.nbbang.auth.util.RedisUtil;
+import com.dev.nbbang.auth.authentication.exception.NoSuchMemberException;
+import com.dev.nbbang.auth.authentication.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,8 +27,6 @@ import java.util.Optional;
 public class MemberServiceImpl  implements MemberService, UserDetailsService {
     private final MemberRepository memberRepository;
     private final SocialTypeMatcher socialTypeMatcher;
-    private final RedisUtil redisUtil;
-    private final JwtUtil jwtUtil;
 
     /**
      * 소셜 로그인 타입과 인가코드를 이용해 각 포털의 소셜 로그인을 통해 로그인한다.
@@ -40,8 +36,8 @@ public class MemberServiceImpl  implements MemberService, UserDetailsService {
      * @return memberId  각 포털의 첫번째 이니셜과 제공하는 소셜 로그인 아이디를 합친 String 타입의 고유 아이디
      */
     public String socialLogin(SocialLoginType socialLoginType, String code) {
-        SocialOauth socialOauth = socialTypeMatcher.findSocialOauthByType(socialLoginType);
         try {
+            SocialOauth socialOauth = socialTypeMatcher.findSocialOauthByType(socialLoginType);
             String socialLoginId = socialOauth.requestUserInfo(code);
             SocialLoginIdUtil socialLoginIdUtil = new SocialLoginIdUtil(socialLoginType, socialLoginId);
             return socialLoginIdUtil.getMemberId();
@@ -63,20 +59,6 @@ public class MemberServiceImpl  implements MemberService, UserDetailsService {
                 .orElseThrow(() -> new NoSuchMemberException("회원이 존재하지 않습니다.", NbbangException.NOT_FOUND_MEMBER));
 
         return MemberDTO.create(member);
-    }
-
-    /**
-     * DTO 타입의 회원 객체를 이용해 Redis에서 관리할 리프레시 토큰과 세션에 저장할 엑세스 토큰을 관리한다.
-     *
-     * @param member DTO 타입의 회원 객체
-     * @return accessToken String 타입의 엑세스 토큰
-     */
-    @Override
-    public String manageToken(MemberDTO member) {
-        String refreshToken = jwtUtil.generateRefreshToken(member.getMemberId(), member.getNickname());
-        redisUtil.setData(member.getMemberId(), refreshToken, JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
-
-        return jwtUtil.generateAccessToken(member.getMemberId(), member.getNickname());
     }
 
     /**

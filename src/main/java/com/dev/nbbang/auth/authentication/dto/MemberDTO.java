@@ -1,7 +1,7 @@
 package com.dev.nbbang.auth.dto;
 
-import com.dev.nbbang.auth.entity.Grade;
-import com.dev.nbbang.auth.entity.Member;
+import com.dev.nbbang.auth.authentication.entity.Grade;
+import com.dev.nbbang.auth.authentication.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 

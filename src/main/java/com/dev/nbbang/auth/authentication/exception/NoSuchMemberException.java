@@ -1,4 +1,4 @@
-package com.dev.nbbang.auth.exception;
+package com.dev.nbbang.auth.authentication.exception;
 
 import com.dev.nbbang.auth.global.exception.NbbangException;
 

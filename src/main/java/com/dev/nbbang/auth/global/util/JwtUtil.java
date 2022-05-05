@@ -1,4 +1,4 @@
-package com.dev.nbbang.auth.util;
+package com.dev.nbbang.auth.global.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;

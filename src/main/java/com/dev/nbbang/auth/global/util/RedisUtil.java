@@ -1,4 +1,4 @@
-package com.dev.nbbang.auth.util;
+package com.dev.nbbang.auth.global.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;

@@ -1,4 +1,4 @@
-package com.dev.nbbang.auth.entity;
+package com.dev.nbbang.auth.authentication.entity;
 
 import lombok.Builder;
 import lombok.Getter;

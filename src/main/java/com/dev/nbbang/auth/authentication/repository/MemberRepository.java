@@ -1,6 +1,6 @@
-package com.dev.nbbang.auth.repository;
+package com.dev.nbbang.auth.authentication.repository;
 
-import com.dev.nbbang.auth.entity.Member;
+import com.dev.nbbang.auth.authentication.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

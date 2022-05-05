@@ -1,9 +1,7 @@
 package com.dev.nbbang.auth.filter;
 
-import com.dev.nbbang.auth.dto.request.MemberRegisterRequest;
-import com.dev.nbbang.auth.util.JwtUtil;
-import com.dev.nbbang.auth.util.RedisUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.dev.nbbang.auth.global.util.JwtUtil;
+import com.dev.nbbang.auth.global.util.RedisUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

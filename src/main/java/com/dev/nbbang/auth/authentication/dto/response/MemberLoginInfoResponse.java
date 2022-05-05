@@ -2,15 +2,13 @@ package com.dev.nbbang.auth.dto.response;
 
 
 import com.dev.nbbang.auth.dto.MemberDTO;
-import com.dev.nbbang.auth.entity.Grade;
+import com.dev.nbbang.auth.authentication.entity.Grade;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Getter
