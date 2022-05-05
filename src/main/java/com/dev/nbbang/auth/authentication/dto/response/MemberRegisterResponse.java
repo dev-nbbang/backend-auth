@@ -1,4 +1,4 @@
-package com.dev.nbbang.auth.dto.response;
+package com.dev.nbbang.auth.authentication.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

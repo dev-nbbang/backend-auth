@@ -1,7 +1,7 @@
-package com.dev.nbbang.auth.dto.response;
+package com.dev.nbbang.auth.authentication.dto.response;
 
 
-import com.dev.nbbang.auth.dto.MemberDTO;
+import com.dev.nbbang.auth.authentication.dto.MemberDTO;
 import com.dev.nbbang.auth.authentication.entity.Grade;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

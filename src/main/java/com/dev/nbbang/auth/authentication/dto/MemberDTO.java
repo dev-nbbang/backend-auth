@@ -1,4 +1,4 @@
-package com.dev.nbbang.auth.dto;
+package com.dev.nbbang.auth.authentication.dto;
 
 import com.dev.nbbang.auth.authentication.entity.Grade;
 import com.dev.nbbang.auth.authentication.entity.Member;

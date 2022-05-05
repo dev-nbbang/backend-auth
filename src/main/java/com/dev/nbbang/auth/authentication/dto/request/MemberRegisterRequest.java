@@ -1,4 +1,4 @@
-package com.dev.nbbang.auth.dto.request;
+package com.dev.nbbang.auth.authentication.dto.request;
 
 import com.dev.nbbang.auth.authentication.entity.Member;
 import lombok.AllArgsConstructor;
