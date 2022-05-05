@@ -88,4 +88,11 @@ public class AuthController {
             return new ResponseEntity<>(MemberRegisterResponse.create(memberId, false), HttpStatus.OK);
         }
     }
+    /**
+     * flow
+     * 1. 새로운 회원 저장
+     * 2. 회원 저장 시 PostPersist() 걸고 카프카 메세지 보내기 (Memberservice에서 카프카 서비스 호출)
+     * 3. OTT ID, Recommend 보내기
+     * 4. 리턴
+     */
 }
