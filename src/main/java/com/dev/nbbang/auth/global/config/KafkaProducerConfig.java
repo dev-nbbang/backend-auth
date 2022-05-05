@@ -15,12 +15,12 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
-public class KafkaConfig {
+public class KafkaProducerConfig {
     private final String host;
     private final String port;
 
     // 카프라 Bootstrap Server Config 프로퍼티 파일에서 가져오기
-    public KafkaConfig(@Value("${kafka.host}") String host, @Value("${kafka.port}") String port) {
+    public KafkaProducerConfig(@Value("${kafka.host}") String host, @Value("${kafka.port}") String port) {
         this.host = host;
         this.port = port;
     }

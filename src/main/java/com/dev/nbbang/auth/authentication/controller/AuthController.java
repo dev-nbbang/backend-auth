@@ -34,6 +34,7 @@ public class AuthController {
     private final MemberService memberService;
     private final SocialTypeMatcher socialTypeMatcher;
     private final TokenService tokenService;
+
     @GetMapping(value = "/{socialLoginType}/test")
 //    @Operation(summary = "백엔드 소셜 로그인 인가 코드 요청", description = "백엔드 소셜 로그인 인가 코드 요청 테스트")
     public void test(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType, HttpServletResponse httpServletResponse) throws IOException {

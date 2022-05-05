@@ -11,6 +11,7 @@ import com.dev.nbbang.auth.authentication.exception.NoCreateMemberException;
 import com.dev.nbbang.auth.global.exception.NbbangException;
 import com.dev.nbbang.auth.authentication.exception.NoSuchMemberException;
 import com.dev.nbbang.auth.authentication.repository.MemberRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +30,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService, UserDetailsService {
     private final MemberRepository memberRepository;
     private final SocialTypeMatcher socialTypeMatcher;
+    private final MemberProducer memberProducer;
 
     /**
      * 소셜 로그인 타입과 인가코드를 이용해 각 포털의 소셜 로그인을 통해 로그인한다.
@@ -75,6 +77,13 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
                 .orElseThrow(() -> new NoCreateMemberException("회원정보 저장에 실패했습니다.", NbbangException.NO_CREATE_MEMBER));
 
         // 3. 회원 정보 저장 시 카프카 메세지 전달 동기 방식 처리?
+        if((!ottId.isEmpty() && !savedMember.getMemberId().isEmpty()) || !recommendMemberId.isEmpty()) {
+            try {
+                memberProducer.sendRecommendIdAndOttId(MemberProducer.KafkaSendRequest.create(savedMember.getMemberId(), recommendMemberId, ottId));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
 
         // 4. 저장 완료된 경우 저장된 회원 리턴
         return MemberDTO.create(savedMember);
