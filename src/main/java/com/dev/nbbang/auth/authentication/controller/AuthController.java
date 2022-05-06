@@ -57,7 +57,7 @@ public class AuthController {
 
             return ResponseEntity.ok(AuthResponse.create(authUrl));
         } catch (IllegalSocialTypeException | FailCreateAuthUrlException e) {
-            log.info(" >> [Nbbang Member Controller - signUp] : " + e.getMessage());
+            log.info(" >> [Nbbang Auth Controller - signUp] : " + e.getMessage());
             return ResponseEntity.ok(CommonResponse.create(false, e.getMessage()));
         }
     }
@@ -84,12 +84,12 @@ public class AuthController {
             String accessToken = tokenService.manageToken(findMember.getMemberId(), findMember.getNickname());
             servletResponse.setHeader("Authorization" ,"Bearer "+accessToken);
 
-            return new ResponseEntity<>(MemberLoginInfoResponse.create(findMember, true,true, "소셜 로그인에 성공했습니다."), HttpStatus.OK);
+            return ResponseEntity.ok(MemberLoginInfoResponse.create(findMember, true, "소셜 로그인에 성공했습니다."));
         } catch (NoSuchMemberException e) {
             log.info(e.getMessage());
             log.info("회원가입필요");
 
-            return new ResponseEntity<>(MemberRegisterResponse.create(memberId, false), HttpStatus.OK);
+            return ResponseEntity.ok(MemberRegisterResponse.create(memberId, false));
         }
     }
     /**
@@ -103,21 +103,19 @@ public class AuthController {
 //    @Operation(summary = "추가 회원 가입", description = "추가 회원 가입")
     public ResponseEntity<?> signUp(@RequestBody MemberRegisterRequest request, HttpServletResponse servletResponse) {
         try {
-            // 요청 데이터 엔티이에 저장
+            // 요청 데이터 엔티티에 저장
             MemberDTO savedMember = memberService.saveMember(MemberRegisterRequest.toEntity(request), request.getOttId(), request.getRecommendMemberId());
 
             // 회원 생성이 완료된 경우
-//            String accessToken = memberService.manageToken(savedMember);
             String accessToken = tokenService.manageToken(savedMember.getMemberId(), savedMember.getNickname());
             servletResponse.setHeader("Authorization", "Bearer " + accessToken);
             log.info("redis 저장 완료");
 
-            return new ResponseEntity<>(MemberLoginInfoResponse.create(savedMember, true, true, "회원가입에 성공했습니다."), HttpStatus.CREATED);
+            return new ResponseEntity<>(MemberLoginInfoResponse.create(savedMember, true, "회원가입에 성공했습니다."), HttpStatus.CREATED);
         } catch (DuplicateMemberIdException | NoCreateMemberException e) {
-            log.info(" >> [Nbbang Member Controller - signUp] : " + e.getMessage());
+            log.info(" >> [Nbbang Auth Controller - signUp] : " + e.getMessage());
 
-            return new ResponseEntity<>(CommonResponse.create(false, e.getMessage()), HttpStatus.OK);
+            return ResponseEntity.ok(CommonResponse.create(false, e.getMessage()));
         }
     }
-
 }

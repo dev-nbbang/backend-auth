@@ -22,19 +22,17 @@ public class MemberLoginInfoResponse {
     private Long point;
     private Long exp;
 
-    public static Map<String, Object> create(MemberDTO member, boolean isRegister, boolean status, String message) {
+    public static Map<String, Object> create(MemberDTO member, boolean status, String message) {
         MemberLoginInfoResponse memberInfo = MemberLoginInfoResponse.builder()
                 .memberId(member.getMemberId())
                 .nickname(member.getNickname())
                 .grade(member.getGrade())
                 .point(member.getPoint())
                 .exp(member.getExp())
-//                .ottView(getOttView(member))
                 .build();
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("memberInfo", memberInfo);
-        dataMap.put("isRegister", isRegister);
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("status", status);
