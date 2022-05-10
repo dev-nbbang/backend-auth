@@ -16,8 +16,8 @@ import com.dev.nbbang.auth.authentication.dto.request.MemberRegisterRequest;
 import com.dev.nbbang.auth.authentication.exception.NoSuchMemberException;
 import com.dev.nbbang.auth.global.exception.ExpiredRefreshTokenException;
 import com.dev.nbbang.auth.global.response.CommonResponse;
+import com.dev.nbbang.auth.global.response.CommonSuccessResponse;
 import com.dev.nbbang.auth.global.service.TokenService;
-import com.dev.nbbang.auth.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -56,10 +56,10 @@ public class AuthController {
             SocialAuthUrl socialAuthUrl = socialTypeMatcher.findSocialAuthUrlByType(socialLoginType);
             String authUrl = socialAuthUrl.makeAuthorizationUrl();
 
-            return ResponseEntity.ok(AuthResponse.create(authUrl));
+            return ResponseEntity.ok(CommonSuccessResponse.response(true, AuthResponse.create(authUrl), "소셜로그인 인가코드 URL 생성 완료."));
         } catch (IllegalSocialTypeException | FailCreateAuthUrlException e) {
             log.info(" >> [Nbbang Auth Controller - signUp] : " + e.getMessage());
-            return ResponseEntity.ok(CommonResponse.create(false, e.getMessage()));
+            return ResponseEntity.ok(CommonResponse.response(false, e.getMessage()));
         }
     }
 
@@ -84,12 +84,12 @@ public class AuthController {
             String accessToken = tokenService.manageToken(findMember.getMemberId(), findMember.getNickname());
             servletResponse.setHeader("Authorization" ,"Bearer "+accessToken);
 
-            return ResponseEntity.ok(MemberLoginInfoResponse.create(findMember, true, "소셜 로그인에 성공했습니다."));
+            return ResponseEntity.ok(CommonSuccessResponse.response( true, MemberLoginInfoResponse.create(findMember),"소셜 로그인에 성공했습니다."));
         } catch (NoSuchMemberException e) {
             log.info(e.getMessage());
             log.info("회원가입필요");
 
-            return ResponseEntity.ok(MemberRegisterResponse.create(memberId, false));
+            return ResponseEntity.ok(CommonSuccessResponse.response(true, MemberRegisterResponse.create(memberId, false), "회원 가입이 필요합니다."));
         }
     }
 
@@ -104,11 +104,11 @@ public class AuthController {
             servletResponse.setHeader("Authorization", "Bearer " + accessToken);
             log.info("redis 저장 완료");
 
-            return new ResponseEntity<>(MemberLoginInfoResponse.create(savedMember, true, "회원가입에 성공했습니다."), HttpStatus.CREATED);
+            return new ResponseEntity<>(CommonSuccessResponse.response(true, MemberLoginInfoResponse.create(savedMember), "회원가입에 성공했습니다."), HttpStatus.CREATED);
         } catch (DuplicateMemberIdException | NoCreateMemberException e) {
             log.info(" >> [Nbbang Auth Controller - signUp] : " + e.getMessage());
 
-            return ResponseEntity.ok(CommonResponse.create(false, e.getMessage()));
+            return ResponseEntity.ok(CommonResponse.response(false, e.getMessage()));
         }
     }
 
@@ -129,7 +129,7 @@ public class AuthController {
          } catch (ExpiredRefreshTokenException e) {
              log.info(" >> [Nbbang Auth Controller - reissueJwtToken] : " + e.getMessage());
 
-             return new ResponseEntity<>(CommonResponse.create(false, e.getMessage()), HttpStatus.UNAUTHORIZED);
+             return new ResponseEntity<>(CommonResponse.response(false, e.getMessage()), HttpStatus.UNAUTHORIZED);
          }
     }
 }

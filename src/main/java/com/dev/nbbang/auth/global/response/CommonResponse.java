@@ -13,7 +13,7 @@ public class CommonResponse {
     private boolean status;
     private String message;
 
-    public static CommonResponse create(boolean status, String message) {
+    public static CommonResponse response(boolean status, String message) {
         return CommonResponse.builder()
                 .status(status)
                 .message(message)
