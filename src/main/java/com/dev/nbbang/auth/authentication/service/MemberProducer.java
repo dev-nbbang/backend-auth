@@ -18,6 +18,8 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 @RequiredArgsConstructor
 public class MemberProducer {
+    private final String TOPIC = "new-member-register";
+
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
@@ -27,7 +29,7 @@ public class MemberProducer {
 
         log.info("[MemberProducer] sendMessage : " + sendMessage);
         try {
-            SendResult<String, String> result = kafkaTemplate.send("new-member-register", sendMessage).get();
+            SendResult<String, String> result = kafkaTemplate.send(TOPIC, sendMessage).get();
             log.info("[MemberProducer] After Send Message result : "+ result.getRecordMetadata());
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

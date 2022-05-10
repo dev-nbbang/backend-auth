@@ -5,7 +5,8 @@ public enum NbbangException {
     ILLEGAL_SOCIAL_TYPE("BE002", "Input Illegal Social Type"),
     FAIL_TO_CREATE_AUTH_URL("BE003", "Failed To Create Social Auth Url"),
     NO_CREATE_MEMBER("BE004", "Doesn't Create Member"),
-    DUPLICATE_MEMBER_ID("BE007", "Duplicate Member Id"),;
+    DUPLICATE_MEMBER_ID("BE005", "Duplicate Member Id"),
+    EXPIRED_REFRESH_TOKEN("BE006", "Expired Refresh Token");
 
     private String code;
     private String message;

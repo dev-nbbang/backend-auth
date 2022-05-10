@@ -77,6 +77,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
                 .orElseThrow(() -> new NoCreateMemberException("회원정보 저장에 실패했습니다.", NbbangException.NO_CREATE_MEMBER));
 
         // 3. 회원 정보 저장 시 카프카 메세지 전달 동기 방식 처리?
+        // 트랜잭션 처리 이슈 생각해봐야할듯 ...
         if((!ottId.isEmpty() && !savedMember.getMemberId().isEmpty()) || !recommendMemberId.isEmpty()) {
             try {
                 memberProducer.sendRecommendIdAndOttId(MemberProducer.KafkaSendRequest.create(savedMember.getMemberId(), recommendMemberId, ottId));
