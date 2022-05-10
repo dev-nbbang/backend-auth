@@ -55,8 +55,7 @@ public class JwtUtil {
     }
 
     // 발췌한 payload에서 userid 추출
-    public String getMemberId
-    (String token) {
+    public String getMemberId (String token) {
         return extractAllClaims(token).get("memberId", String.class);
     }
 

@@ -23,6 +23,11 @@ public class RedisUtil {
         vop.set(key, value, expire);
     }
 
+    // Redis내에 리프레시 토큰을 가지고 있는지
+    public Boolean hasKey(String key) {
+        return redisTemplate.hasKey(key);
+    }
+
     public Boolean deleteData(String key) {
         return redisTemplate.delete(key);
     }

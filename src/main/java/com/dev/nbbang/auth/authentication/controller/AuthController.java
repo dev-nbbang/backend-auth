@@ -14,14 +14,17 @@ import com.dev.nbbang.auth.authentication.dto.response.MemberLoginInfoResponse;
 import com.dev.nbbang.auth.authentication.dto.response.MemberRegisterResponse;
 import com.dev.nbbang.auth.authentication.dto.request.MemberRegisterRequest;
 import com.dev.nbbang.auth.authentication.exception.NoSuchMemberException;
+import com.dev.nbbang.auth.global.exception.ExpiredRefreshTokenException;
 import com.dev.nbbang.auth.global.response.CommonResponse;
 import com.dev.nbbang.auth.global.service.TokenService;
+import com.dev.nbbang.auth.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -36,7 +39,6 @@ public class AuthController {
     private final TokenService tokenService;
 
     @GetMapping(value = "/{socialLoginType}/test")
-//    @Operation(summary = "백엔드 소셜 로그인 인가 코드 요청", description = "백엔드 소셜 로그인 인가 코드 요청 테스트")
     public void test(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType, HttpServletResponse httpServletResponse) throws IOException {
         SocialAuthUrl socialAuthUrl = socialTypeMatcher.findSocialAuthUrlByType(socialLoginType);
         String authUrl = socialAuthUrl.makeAuthorizationUrl();
@@ -46,7 +48,6 @@ public class AuthController {
     }
 
     @GetMapping(value = "/{socialLoginType}")
-//    @Operation(summary = "소셜 로그인 인가코드 URL", description = "소셜 로그인 인가코드 URL을 생성한다.")
     public ResponseEntity<?> socialLoginType(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType) {
         log.info(">> 사용자로부터 SNS 로그인 요청을 받음 :: {} Social Login", socialLoginType);
 
@@ -63,7 +64,6 @@ public class AuthController {
     }
 
     @GetMapping(value = "/{socialLoginType}/callback")
-//    @Operation(summary = "동의 정보 인증 후 리다이렉트", description = "동의 정보 인증 후 리다이렉트 URI")
     public ResponseEntity<?> callback(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType,
                                       @RequestParam(name = "code") String code, HttpServletResponse servletResponse) {
         log.info(">> 소셜 로그인 API 서버로부터 받은 code :: {}", code);
@@ -92,15 +92,8 @@ public class AuthController {
             return ResponseEntity.ok(MemberRegisterResponse.create(memberId, false));
         }
     }
-    /**
-     * flow
-     * 1. 새로운 회원 저장
-     * 2. 회원 저장 시 PostPersist() 걸고 카프카 메세지 보내기 (Memberservice에서 카프카 서비스 호출)
-     * 3. OTT ID, Recommend 보내기
-     * 4. 리턴
-     */
+
     @PostMapping("/new")
-//    @Operation(summary = "추가 회원 가입", description = "추가 회원 가입")
     public ResponseEntity<?> signUp(@RequestBody MemberRegisterRequest request, HttpServletResponse servletResponse) {
         try {
             // 요청 데이터 엔티티에 저장
@@ -117,5 +110,26 @@ public class AuthController {
 
             return ResponseEntity.ok(CommonResponse.create(false, e.getMessage()));
         }
+    }
+
+    @GetMapping("/reissue")
+    public ResponseEntity<?> reissueJwtToken(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        log.info("[Nbbang Auth Controller] 엑세스 토큰 만료로 인한 재발급 요청");
+         try {
+             // 엑세스 토큰 파싱
+             String accessToken = servletRequest.getHeader("Authorization").substring(7);
+
+             // 리프레시 토큰 확인 후 재발급 혹은 재로그인 요창
+             String newAccessToken = tokenService.reissueToken(accessToken);
+
+             // 헤더에 새로운 엑세스 토큰 발급
+             servletResponse.setHeader("Authorization", "Bearer " + newAccessToken);
+
+             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+         } catch (ExpiredRefreshTokenException e) {
+             log.info(" >> [Nbbang Auth Controller - reissueJwtToken] : " + e.getMessage());
+
+             return new ResponseEntity<>(CommonResponse.create(false, e.getMessage()), HttpStatus.UNAUTHORIZED);
+         }
     }
 }
