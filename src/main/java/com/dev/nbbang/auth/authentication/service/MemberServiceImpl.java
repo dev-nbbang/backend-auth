@@ -13,12 +13,6 @@ import com.dev.nbbang.auth.authentication.exception.NoSuchMemberException;
 import com.dev.nbbang.auth.authentication.repository.MemberRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,7 +21,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MemberServiceImpl implements MemberService, UserDetailsService {
+public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final SocialTypeMatcher socialTypeMatcher;
     private final MemberProducer memberProducer;
@@ -88,19 +82,5 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
         // 4. 저장 완료된 경우 저장된 회원 리턴
         return MemberDTO.create(savedMember);
-    }
-
-    /**
-     * @param username 회원 아이디
-     * @return User
-     * @throws UsernameNotFoundException
-     */
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member findMember = Optional.ofNullable(memberRepository.findByMemberId(username)).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
-        List<GrantedAuthority> authorityList = new ArrayList<GrantedAuthority>();
-        authorityList.add(new SimpleGrantedAuthority("USER"));
-
-        return new User(findMember.getMemberId(), "", authorityList);
     }
 }
