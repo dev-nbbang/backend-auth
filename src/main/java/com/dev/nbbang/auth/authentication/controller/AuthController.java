@@ -89,7 +89,7 @@ public class AuthController {
             log.info(e.getMessage());
             log.info("회원가입필요");
 
-            return ResponseEntity.ok(CommonSuccessResponse.response(true, MemberRegisterResponse.create(memberId, false), "회원 가입이 필요합니다."));
+            return ResponseEntity.ok(CommonSuccessResponse.response(false, MemberRegisterResponse.create(memberId), "회원 가입이 필요합니다."));
         }
     }
 
