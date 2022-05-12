@@ -20,7 +20,7 @@ public class JwtUtil {
     public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 *24 * 2;
 
 
-    @Value("${spring.jwt.secret}")
+    @Value("${jwt.secret}")
     private String SECRET_KEY;
 
     // Token 생성 메소드

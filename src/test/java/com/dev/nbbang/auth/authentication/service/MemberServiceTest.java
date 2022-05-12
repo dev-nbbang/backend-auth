@@ -1,16 +1,39 @@
 package com.dev.nbbang.auth.authentication.service;
 
-import com.dev.nbbang.auth.authentication.entity.Member;
+import com.dev.nbbang.auth.api.util.SocialTypeMatcher;
+import com.dev.nbbang.auth.authentication.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.BDDMockito.given;
-
+@ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
+    @Mock
+    private MemberRepository memberRepository;
+
+    @Mock
+    private SocialTypeMatcher socialTypeMatcher;
+
+    @Mock
+    private MemberProducer memberProducer;
+
+    @InjectMocks
+    private MemberServiceImpl memberService;
+
+    @Test
+    @DisplayName("인증 서비스 : 소셜 로그인 성공")
+    void 소셜_로그인_성공() {
+
+    }
+
+    @Test
+    @DisplayName("인증 서비스 : 소셜 로그인 실패")
+    void 소셜_로그인_실패() {
+
+    }
 
    /* @Test
     @DisplayName("회원 서비스 : 회원 추가 정보 저장 - 성공")
