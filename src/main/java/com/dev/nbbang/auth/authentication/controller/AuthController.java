@@ -20,6 +20,8 @@ import com.dev.nbbang.auth.global.response.CommonSuccessResponse;
 import com.dev.nbbang.auth.global.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,16 +29,34 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 @Slf4j
+@RefreshScope
 public class AuthController {
     private final MemberService memberService;
     private final SocialTypeMatcher socialTypeMatcher;
     private final TokenService tokenService;
+
+    @Value("${common.test}")
+    private String common;
+
+    @Value("${nbbang.auth.test}")
+    private String nbbang;
+
+    @GetMapping(value = "/properties/test")
+    public Object refreshScopeTest() {
+        Map<String, String> test = new HashMap<>();
+        test.put("common", common);
+        test.put("nbbang", nbbang);
+
+        return test;
+    }
 
     @GetMapping(value = "/{socialLoginType}/test")
     public void test(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType, HttpServletResponse httpServletResponse) throws IOException {
@@ -82,9 +102,9 @@ public class AuthController {
             // 회원 닉네임 수정 시 JWT 새로 생성 및 레디스 값 갱신 (프론트
             // 구현 후 넣어주기)
             String accessToken = tokenService.manageToken(findMember.getMemberId(), findMember.getNickname());
-            servletResponse.setHeader("Authorization" ,"Bearer "+accessToken);
+            servletResponse.setHeader("Authorization", "Bearer " + accessToken);
 
-            return ResponseEntity.ok(CommonSuccessResponse.response( true, MemberLoginInfoResponse.create(findMember),"소셜 로그인에 성공했습니다."));
+            return ResponseEntity.ok(CommonSuccessResponse.response(true, MemberLoginInfoResponse.create(findMember), "소셜 로그인에 성공했습니다."));
         } catch (NoSuchMemberException e) {
             log.info(e.getMessage());
             log.info("회원가입필요");
@@ -115,21 +135,21 @@ public class AuthController {
     @GetMapping("/reissue")
     public ResponseEntity<?> reissueJwtToken(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         log.info("[Nbbang Auth Controller] 엑세스 토큰 만료로 인한 재발급 요청");
-         try {
-             // 엑세스 토큰 파싱
-             String accessToken = servletRequest.getHeader("Authorization").substring(7);
+        try {
+            // 엑세스 토큰 파싱
+            String accessToken = servletRequest.getHeader("Authorization").substring(7);
 
-             // 리프레시 토큰 확인 후 재발급 혹은 재로그인 요창
-             String newAccessToken = tokenService.reissueToken(accessToken);
+            // 리프레시 토큰 확인 후 재발급 혹은 재로그인 요창
+            String newAccessToken = tokenService.reissueToken(accessToken);
 
-             // 헤더에 새로운 엑세스 토큰 발급
-             servletResponse.setHeader("Authorization", "Bearer " + newAccessToken);
+            // 헤더에 새로운 엑세스 토큰 발급
+            servletResponse.setHeader("Authorization", "Bearer " + newAccessToken);
 
-             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-         } catch (ExpiredRefreshTokenException e) {
-             log.info(" >> [Nbbang Auth Controller - reissueJwtToken] : " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ExpiredRefreshTokenException e) {
+            log.info(" >> [Nbbang Auth Controller - reissueJwtToken] : " + e.getMessage());
 
-             return new ResponseEntity<>(CommonResponse.response(false, e.getMessage()), HttpStatus.UNAUTHORIZED);
-         }
+            return new ResponseEntity<>(CommonResponse.response(false, e.getMessage()), HttpStatus.UNAUTHORIZED);
+        }
     }
 }

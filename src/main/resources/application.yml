@@ -1,18 +1,31 @@
 # Spring Boot 설정
 spring:
   application:
-    name: nbbang-auth
+    name: nbbang-auth, common     # common 공통 프로퍼티 불러오기
   profiles:
     active: local
   config:
     import: optional:configserver:http://localhost:8197
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: root
+    password: root
+  main:
+    allow-bean-definition-overriding: true
 # 서버 설정
 server:
   port: 9100
   servlet:
     context-path: /nbbang-auth
+# acutator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh
 
-datasource
+
 ## 소셜 로그인 설정
 #sns:
 #  google:
@@ -76,7 +89,6 @@ datasource
 #spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 #spring.jpa.properties.hibernate.format_sql=true
 #spring.jpa.show-sql=true
-#
 #logging.level.org.hibernate.SQL = debug
 #logging.level.org.hibernate.type.descriptor.sql = trace
 #

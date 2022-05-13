@@ -1,11 +1,13 @@
 package com.dev.nbbang.auth.api.util;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
+@RefreshScope
 public class KakaoAuthUrl implements SocialAuthUrl {
     @Value("${sns.kakao.redirect-uri}")
     private String redirectUri;
