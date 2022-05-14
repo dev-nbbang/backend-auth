@@ -1,16 +1,16 @@
 # Spring Boot 설정
 spring:
   application:
-    name: nbbang-auth, common     # common 공통 프로퍼티 불러오기
+    name: nbbang-auth, common, jwt-common, member-datasource     # common 공통 프로퍼티 불러오기
   profiles:
     active: local
   config:
     import: optional:configserver:http://localhost:8197
   rabbitmq:
-    host: localhost
+    host: 129.154.222.27
     port: 5672
-    username: root
-    password: root
+    username: nbbang
+    password: nbbang-dev!@#
   main:
     allow-bean-definition-overriding: true
 # 서버 설정
@@ -23,7 +23,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: bus-refresh
+        include: busrefresh
 
 
 ## 소셜 로그인 설정
