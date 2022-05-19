@@ -3,6 +3,7 @@ package com.dev.nbbang.auth.api.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@RefreshScope
 public class GoogleOauth implements SocialOauth{
     @Value("${sns.google.uri}")
     private String GOOGLE_SNS_BASE_URI;

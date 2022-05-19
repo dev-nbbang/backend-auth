@@ -15,7 +15,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,8 +34,13 @@ public class MemberServiceImpl implements MemberService {
      */
     public String socialLogin(SocialLoginType socialLoginType, String code) {
         try {
+            // 1. 소셜 로그인 타입 매칭
             SocialOauth socialOauth = socialTypeMatcher.findSocialOauthByType(socialLoginType);
+
+            // 2. 소셜 로그인 시도
             String socialLoginId = socialOauth.requestUserInfo(code);
+
+            // 3. 엔빵 아이디로 변환
             SocialLoginIdUtil socialLoginIdUtil = new SocialLoginIdUtil(socialLoginType, socialLoginId);
             return socialLoginIdUtil.getMemberId();
         } catch (Exception e) {

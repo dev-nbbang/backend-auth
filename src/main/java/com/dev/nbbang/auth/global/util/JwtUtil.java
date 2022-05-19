@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 
@@ -15,12 +16,13 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+@RefreshScope
 public class JwtUtil {
     public final static long TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 * 2;
     public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 *24 * 2;
 
 
-    @Value("${spring.jwt.secret}")
+    @Value("${jwt.secret}")
     private String SECRET_KEY;
 
     // Token 생성 메소드

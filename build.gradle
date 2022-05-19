@@ -47,8 +47,17 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	runtimeOnly 'mysql:mysql-connector-java'
 
+	// kafka
 	implementation 'org.springframework.kafka:spring-kafka'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+	// config
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+
+	// rabbitMQ
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bus-amqp'
+
 }
 
 dependencyManagement {
