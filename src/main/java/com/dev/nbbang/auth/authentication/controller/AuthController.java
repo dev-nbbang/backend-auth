@@ -149,7 +149,7 @@ public class AuthController {
         } catch (ExpiredRefreshTokenException e) {
             log.info(" >> [Nbbang Auth Controller - reissueJwtToken] : " + e.getMessage());
 
-            return new ResponseEntity<>(CommonResponse.response(false, e.getMessage()), HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.response(false, e.getMessage()));
         }
     }
 }
