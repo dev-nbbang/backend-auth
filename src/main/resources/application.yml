@@ -13,6 +13,11 @@ spring:
     password: nbbang-dev!@#
   main:
     allow-bean-definition-overriding: true
+  cloud:
+    bus:
+      enabled: true
+      refresh:
+        enabled: true
 # 서버 설정
 server:
   port: 9100
@@ -23,7 +28,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: busrefresh, refresh
+        include:
+          - "busrefresh"
+          - "refresh"
 # 키스토어 복호화
 encrypt:
   key-store:
