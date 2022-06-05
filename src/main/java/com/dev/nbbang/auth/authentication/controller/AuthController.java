@@ -83,10 +83,11 @@ public class AuthController {
         }
     }
 
-    @GetMapping(value = "/{socialLoginType}/callback")
+    @GetMapping(value = "/{socialLoginType}/login")
     public ResponseEntity<?> callback(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType,
                                       @RequestParam(name = "code") String code, HttpServletResponse servletResponse) {
-        log.info(">> 소셜 로그인 API 서버로부터 받은 code :: {}", code);
+
+        log.info("[소셜 로그인 코드 수신]");
 
         // 프론트 -> 소셜 서버 -> 리다이렉트 -> 프론트는 결과를 모름
         // 소셜 로그인 실패시

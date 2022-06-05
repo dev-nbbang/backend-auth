@@ -17,9 +17,6 @@ public class KakaoAuthUrl implements SocialAuthUrl {
 
     @Override
     public String makeAuthorizationUrl() {
-        System.out.println("clientId = " + clientId);
-        System.out.println("redirectUri = " + redirectUri);
-
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
                 .scheme("https")
                 .host("kauth.kakao.com")
@@ -29,7 +26,6 @@ public class KakaoAuthUrl implements SocialAuthUrl {
                 .queryParam("response_type", "code")
                 .build(true);
 
-        System.out.println("builder.toUriString() = " + uriComponents.toUriString());
 
         return uriComponents.toUriString();
     }
