@@ -30,15 +30,20 @@ public class KafkaProducerConfig {
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         // 프로퍼티 설정
+        System.out.println("host: "+host);
+        System.out.println("port: "+port);
         Map<String, Object> properties = new HashMap<>();
 
         // Bootstrap Server는 일반적으로 9092번 포트를 사용한다.
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, host + ":" + port);
+//        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, host + ":" + port);
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "129.154.222.27" + ":" + "9092");
 
         // Key, Value Serialize 프로퍼티 설정
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
+        DefaultKafkaProducerFactory<Object, Object> objectObjectDefaultKafkaProducerFactory = new DefaultKafkaProducerFactory<>(properties);
+        objectObjectDefaultKafkaProducerFactory.setProducerPerConsumerPartition(false);
         return new DefaultKafkaProducerFactory<>(properties);
     }
 

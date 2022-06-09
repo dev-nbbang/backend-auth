@@ -13,6 +13,9 @@ spring:
     password: nbbang-dev!@#
   main:
     allow-bean-definition-overriding: true
+  kafka:
+    producer:
+      bootstrap-servers: 129.154.222.27:9092
 # 서버 설정
 server:
   port: 9100
