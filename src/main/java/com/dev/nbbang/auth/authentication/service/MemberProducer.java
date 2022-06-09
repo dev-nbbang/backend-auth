@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -23,6 +24,8 @@ public class MemberProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
+
+    @Transactional
     public void sendRecommendIdAndOttId(KafkaSendRequest kafkaSendRequest) throws JsonProcessingException {
         log.info("[MemberProducer] Auth Service -> Member Service");
         String sendMessage = objectMapper.writeValueAsString(kafkaSendRequest);
