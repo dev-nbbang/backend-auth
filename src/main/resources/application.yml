@@ -3,7 +3,7 @@ spring:
   application:
     name: nbbang-auth, common, jwt-common, member-datasource     # common 공통 프로퍼티 불러오기
   profiles:
-    active: local
+    active: prod
   config:
     import: optional:configserver:http://localhost:8197
   rabbitmq:
