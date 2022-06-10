@@ -76,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
 
         // 3. 회원 정보 저장 시 카프카 메세지 전달 동기 방식 처리?
         // 트랜잭션 처리 이슈 생각해봐야할듯 ...
-        if((!ottId.isEmpty() && !savedMember.getMemberId().isEmpty()) || !recommendMemberId.isEmpty()) {
+        if ((!ottId.isEmpty() && savedMember.getMemberId().length() > 0) || recommendMemberId.length() > 0) {
             try {
                 memberProducer.sendRecommendIdAndOttId(MemberProducer.KafkaSendRequest.create(savedMember.getMemberId(), recommendMemberId, ottId));
             } catch (JsonProcessingException e) {

@@ -44,20 +44,20 @@ public class MemberProducer {
     @NoArgsConstructor
     static class KafkaSendRequest {
         private String memberId;
-        private String recommendId;
+        private String recommendMemberId;
         private List<Integer> ottId;
 
         @Builder
-        public KafkaSendRequest(String memberId, String recommendId, List<Integer> ottId) {
+        public KafkaSendRequest(String memberId, String recommendMemberId, List<Integer> ottId) {
             this.memberId = memberId;
-            this.recommendId = recommendId;
+            this.recommendMemberId = recommendMemberId;
             this.ottId = ottId;
         }
 
-        public static KafkaSendRequest create(String memberId, String recommendId, List<Integer> ottId) {
+        public static KafkaSendRequest create(String memberId, String recommendMemberId, List<Integer> ottId) {
             return KafkaSendRequest.builder()
                     .memberId(memberId)
-                    .recommendId(recommendId)
+                    .recommendMemberId(recommendMemberId)
                     .ottId(ottId)
                     .build();
         }
