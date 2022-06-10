@@ -16,6 +16,12 @@ spring:
   kafka:
     producer:
       bootstrap-servers: 129.154.222.27:9092
+  cloud:
+    bus:
+      enabled: true
+      refresh:
+        enabled: true
+
 # 서버 설정
 server:
   port: 9100
@@ -26,12 +32,14 @@ management:
   endpoints:
     web:
       exposure:
-        include: busrefresh
-# 환경 파일 복호화
+        include:
+          - "busrefresh"
+          - "refresh"
+#    location: file:///Users/zayson/Desktop/Zayson Project/엔빵/nbbang-config.jks
+# 키스토어 복호화
 encrypt:
   key-store:
-    #    내 로컬로 하면 돌아가는데 그러면 서버 배포하면 어케하지..?
-    location: file:///Users/zayson/Desktop/Zayson Project/엔빵/nbbang-config.jks
-    alias: nbbang-config-key
+    location: file:///home/ubuntu/nbbang/key/nbbang-config.jks
     password: config-access
-#    location: file:///home/ubuntu/nbbang/key/nbbang-config.jks
+    alias: nbbang-config-key
+
