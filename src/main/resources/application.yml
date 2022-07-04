@@ -21,15 +21,15 @@ spring:
       enabled: true
       refresh:
         enabled: true
-  sleuth:
-    sampler:
-      probability: 1.0
-    messaging:
-      kafka:
-        enabled: true
-      enabled: true
-  zipkin:
-    base-url: http://localhost:9411
+#  sleuth:
+#    sampler:
+#      probability: 1.0
+#    messaging:
+#      kafka:
+#        enabled: true
+#      enabled: true
+#  zipkin:
+#    base-url: http://localhost:9411
 
 
 # 서버 설정
@@ -45,6 +45,7 @@ management:
         include:
           - "busrefresh"
           - "refresh"
+#    location: file:///Users/zayson/Desktop/Zayson Project/엔빵/nbbang-config.jks
 # 키스토어 복호화
 encrypt:
   key-store:
@@ -52,3 +53,4 @@ encrypt:
     password: config-access
     alias: nbbang-config-key
     location: file:///Users/zayson/Desktop/Zayson Project/엔빵/nbbang-config.jks
+
