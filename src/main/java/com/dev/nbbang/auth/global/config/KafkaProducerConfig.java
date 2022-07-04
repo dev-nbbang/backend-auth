@@ -13,7 +13,6 @@ import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @EnableKafka
 @Configuration
@@ -21,12 +20,11 @@ import java.util.UUID;
 public class KafkaProducerConfig {
     private final String host;
     private final String port;
-    private final String TRANSACTION_ID;
+
     // 카프라 Bootstrap Server Config 프로퍼티 파일에서 가져오기
     public KafkaProducerConfig(@Value("${kafka.host}") String host, @Value("${kafka.port}") String port) {
         this.host = host;
         this.port = port;
-        this.TRANSACTION_ID = UUID.randomUUID().toString();
     }
 
     @Bean
