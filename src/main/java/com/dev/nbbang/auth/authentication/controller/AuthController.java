@@ -83,7 +83,8 @@ public class AuthController {
         }
     }
 
-    @GetMapping(value = "/{socialLoginType}/login")
+//    @GetMapping(value = "/{socialLoginType}/login")
+    @GetMapping(value = "/{socialLoginType}/callback")
     public ResponseEntity<?> callback(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType,
                                       @RequestParam(name = "code") String code, HttpServletResponse servletResponse) {
 

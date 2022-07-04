@@ -29,7 +29,7 @@ public class GoogleOauth implements SocialOauth{
     private String GOOGLE_SNS_TOKEN_BASE_URI;
 
     @Override
-    public String requestAccessToken(String code) {
+    public Map<String, Object> requestAccessToken(String code) {
         RestTemplate restTemplate = new RestTemplate();
 
         Map<String, Object> params = new HashMap<>();
@@ -43,18 +43,19 @@ public class GoogleOauth implements SocialOauth{
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(GOOGLE_SNS_TOKEN_BASE_URI, params, String.class);
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 ObjectMapper objectMapper = new ObjectMapper();
-                Map<String,String> tokenResponse = objectMapper.readValue(responseEntity.getBody(), Map.class);
-                return tokenResponse.get("access_token");
+
+                Map<String,Object> tokenResponse = objectMapper.readValue(responseEntity.getBody(), Map.class);
+
+                return tokenResponse;
             }
         }catch(IOException e) {
             e.printStackTrace();
         }
-        return "구글 로그인 요청 처리 실패";
+        return new HashMap<>();
     }
 
     @Override
-    public String requestUserInfo(String code) {
-        String accessToken = requestAccessToken(code);
+    public String requestUserInfo(String accessToken) {
         RestTemplate restTemplate = new RestTemplate();
 
         String uri = "https://www.googleapis.com/oauth2/v1/userinfo";

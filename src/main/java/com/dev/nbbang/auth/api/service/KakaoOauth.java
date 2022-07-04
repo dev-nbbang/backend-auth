@@ -1,5 +1,6 @@
 package com.dev.nbbang.auth.api.service;
 
+import com.dev.nbbang.auth.global.util.RedisUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -37,7 +39,7 @@ public class KakaoOauth implements SocialOauth {
 
     // 1. 카카오 서버에서 접근 가능한 엑세스 토큰 발급받기
     @Override
-    public String requestAccessToken(String code) {
+    public Map<String, Object> requestAccessToken(String code) {
         // Http Header 세팅
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -61,23 +63,25 @@ public class KakaoOauth implements SocialOauth {
                 // JSon Response 파싱
                 ObjectMapper objectMapper = new ObjectMapper();
 
-                Map<String, String> tokenResponse = objectMapper.readValue(kakaoResponse.getBody(), Map.class);
+                // Access Token, Refresh Token, Expires 전부 받기
+                Map<String, Object> tokenResponse = objectMapper.readValue(kakaoResponse.getBody(), Map.class);
 
-                return tokenResponse.get("access_token");
+                // Map 반환
+                return tokenResponse;
+
             }
         } catch (IOException e) {
             // 커스텀 예외 처리
-            return null;
+            return new HashMap<>();
         }
 
         // 예외 처리 시 어떤 값을 던질지 고민
-        return null;
+        return new HashMap<>();
     }
 
     // 2. 카카오 서버에서 회원 정보 불러오기
     @Override
-    public String requestUserInfo(String code) {
-        String accessToken = requestAccessToken(code);
+    public String requestUserInfo(String accessToken) {
 
         // Http Header
         HttpHeaders httpHeaders = new HttpHeaders();
