@@ -2,10 +2,14 @@ package com.dev.nbbang.auth.api.service;
 
 import com.dev.nbbang.auth.api.entity.SocialLoginType;
 
-public interface SocialOauth {
-    String requestAccessToken(String code);
+import java.util.Map;
 
-    String requestUserInfo(String code);
+public interface SocialOauth {
+//    String requestAccessToken(String code);
+
+    Map<String, Object> requestAccessToken(String code);
+
+    String requestUserInfo(String accessToken);
 
     default SocialLoginType type() {
         if(this instanceof GoogleOauth) {
