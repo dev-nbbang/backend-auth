@@ -7,7 +7,9 @@ public enum NbbangException {
     NO_CREATE_MEMBER("BE004", "Doesn't Create Member"),
     DUPLICATE_MEMBER_ID("BE005", "Duplicate Member Id"),
     EXPIRED_REFRESH_TOKEN("BE006", "Expired Refresh Token"),
-    FAIL_GENERATE_TOKEN("BE007", "Fail To Genereate Token");
+    FAIL_GENERATE_TOKEN("BE007", "Fail To Genereate Token"),
+    ILLEGAL_NICKNAME("Be008", "Illegal Nickname"),
+    FAIL_SOCIAL_LOGIN("BE009", "Fail To Social Login"),;
 
     private String code;
     private String message;

@@ -7,10 +7,9 @@ import com.dev.nbbang.auth.api.util.SocialLoginIdUtil;
 import com.dev.nbbang.auth.api.util.SocialTypeMatcher;
 import com.dev.nbbang.auth.authentication.dto.MemberDTO;
 import com.dev.nbbang.auth.authentication.entity.Member;
-import com.dev.nbbang.auth.authentication.exception.DuplicateMemberIdException;
-import com.dev.nbbang.auth.authentication.exception.NoCreateMemberException;
+import com.dev.nbbang.auth.authentication.exception.*;
+import com.dev.nbbang.auth.authentication.util.NicknameValidation;
 import com.dev.nbbang.auth.global.exception.NbbangException;
-import com.dev.nbbang.auth.authentication.exception.NoSuchMemberException;
 import com.dev.nbbang.auth.authentication.repository.MemberRepository;
 import com.dev.nbbang.auth.global.util.RedisUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -72,8 +71,9 @@ public class MemberServiceImpl implements MemberService {
             return memberId;
         } catch (Exception e) {
             e.printStackTrace();
-            return "소셜 로그인 실패";
         }
+
+        throw new FailSocialLoginException("소셜 로그인에 실패했습니다.", NbbangException.FAIL_SOCIAL_LOGIN);
     }
 
     /**
@@ -98,6 +98,10 @@ public class MemberServiceImpl implements MemberService {
                     throw new DuplicateMemberIdException("이미 존재하는 회원입니다.", NbbangException.DUPLICATE_MEMBER_ID);
                 }
         );
+
+        // 닉네임 유효성 검증
+        if(!NicknameValidation.valid(member.getNickname()))
+            throw new IllegalNicknameException("옳바르지 않은 닉네임입니다.", NbbangException.ILLEGAL_NICKNAME);
 
         // 2. 회원 정보 저장
         Member savedMember = Optional.of(memberRepository.save(member))
