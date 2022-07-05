@@ -71,8 +71,7 @@ public class KakaoOauth implements SocialOauth {
 
             }
         } catch (IOException e) {
-            // 커스텀 예외 처리
-            return new HashMap<>();
+            e.printStackTrace();
         }
 
         // 예외 처리 시 어떤 값을 던질지 고민
@@ -99,8 +98,7 @@ public class KakaoOauth implements SocialOauth {
                 return kakaoUser.get("id").toString();
             }
         } catch (IOException e) {
-            // 커스텀 예외 던지기
-            return null;
+            e.printStackTrace();
         }
         // 디폴트 예외 뭐로 던질지
         return null;

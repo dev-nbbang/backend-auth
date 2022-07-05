@@ -9,7 +9,7 @@ public interface SocialOauth {
 
     Map<String, Object> requestAccessToken(String code);
 
-    String requestUserInfo(String accesstoken);
+    String requestUserInfo(String accessToken);
 
     default SocialLoginType type() {
         if(this instanceof GoogleOauth) {

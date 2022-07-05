@@ -16,7 +16,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 @RefreshScope
-public class GoogleOauth implements SocialOauth{
+public class GoogleOauth implements SocialOauth {
     @Value("${sns.google.uri}")
     private String GOOGLE_SNS_BASE_URI;
     @Value("${sns.google.client.id}")
@@ -44,11 +44,11 @@ public class GoogleOauth implements SocialOauth{
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 ObjectMapper objectMapper = new ObjectMapper();
 
-                Map<String,Object> tokenResponse = objectMapper.readValue(responseEntity.getBody(), Map.class);
+                Map<String, Object> tokenResponse = objectMapper.readValue(responseEntity.getBody(), Map.class);
 
                 return tokenResponse;
             }
-        }catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return new HashMap<>();
@@ -64,7 +64,7 @@ public class GoogleOauth implements SocialOauth{
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
         try {
-            ResponseEntity<String> responseEntity = restTemplate.exchange(uri,HttpMethod.GET, request, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, request, String.class);
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 Map<String, String> googleUser = objectMapper.readValue(responseEntity.getBody(), Map.class);

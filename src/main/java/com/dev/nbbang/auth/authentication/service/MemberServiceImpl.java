@@ -37,29 +37,25 @@ public class MemberServiceImpl implements MemberService {
      * @return memberId  각 포털의 첫번째 이니셜과 제공하는 소셜 로그인 아이디를 합친 String 타입의 고유 아이디
      */
     public String socialLogin(SocialLoginType socialLoginType, String code) {
+        final String ACCESS_TOKEN = "access_token";         // 구글, 카카오 엑세스 토큰 키
+        final String REFRESH_TOKEN = "refresh_token";       // 구글, 카카오 리프레시 토큰 키
+        final String REFRESH_TOKEN_EXPIRES = "refresh_token_expires_in";        // 카카오 리프레시토큰 만료시간 키
         try {
             // 1. 소셜 로그인 타입 매칭
-            SocialOauth socialOauth = socialTypeMatcher.findSocialOauthByType(socialLoginType);
+                SocialOauth socialOauth = socialTypeMatcher.findSocialOauthByType(socialLoginType);
 
             // 2. 토큰 발급
             Map<String, Object> tokenResponse = socialOauth.requestAccessToken(code);
-            String refreshToken = "", accessToken = "";
-            Long expires = 0L;
+            long expires = 25184000L;
 
-            // 카카오인 경우 Map Response
-            if (socialLoginType == SocialLoginType.KAKAO) {
-                if (!tokenResponse.containsKey("access_token") || !tokenResponse.containsKey("refresh_token") || !tokenResponse.containsKey("refresh_token_expires_in"))
-                    throw new FailGenerateTokenException("소셜 로그인 토큰 발급에 실패했습니다.", NbbangException.FAIL_GENERATE_TOKEN);
-                accessToken = tokenResponse.get("access_token").toString();
-                refreshToken = tokenResponse.get("refresh_token").toString();
-                expires = (long) Integer.parseInt(tokenResponse.get("refresh_token_expires_in").toString());
-            }
-            // 구글인 경우 Map Response
-            else if(socialLoginType == SocialLoginType.GOOGLE) {
-                if (!tokenResponse.containsKey("access_token"))
-                    throw new FailGenerateTokenException("소셜 로그인 토큰 발급에 실패했습니다.", NbbangException.FAIL_GENERATE_TOKEN);
-                accessToken = tokenResponse.get("access_token").toString();
-            }
+            if(!tokenResponse.containsKey(ACCESS_TOKEN) || !tokenResponse.containsKey(REFRESH_TOKEN))
+                throw new FailGenerateTokenException("소셜 로그인 토큰 발급에 실패했습니다.", NbbangException.FAIL_GENERATE_TOKEN);
+            String accessToken = tokenResponse.get(ACCESS_TOKEN).toString();
+            String refreshToken = tokenResponse.get(REFRESH_TOKEN).toString();
+
+            // 카카오의 경우 리프레시 토큰 기간으로 지정
+            if(socialLoginType == SocialLoginType.KAKAO && tokenResponse.containsKey(REFRESH_TOKEN_EXPIRES))
+                expires = Integer.parseInt(tokenResponse.get(REFRESH_TOKEN_EXPIRES).toString());
 
             // 3. 소셜 로그인 시도
             String socialLoginId = socialOauth.requestUserInfo(accessToken);
