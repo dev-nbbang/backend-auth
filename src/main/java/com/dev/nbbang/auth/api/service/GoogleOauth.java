@@ -19,12 +19,16 @@ import java.util.Map;
 public class GoogleOauth implements SocialOauth {
     @Value("${sns.google.uri}")
     private String GOOGLE_SNS_BASE_URI;
+
     @Value("${sns.google.client.id}")
     private String GOOGLE_SNS_CLIENT_ID;
+
     @Value("${sns.google.callback.uri}")
     private String GOOGLE_SNS_CALLBACK_URI;
+
     @Value("${sns.google.client.secret}")
     private String GOOGLE_SNS_CLIENT_SECRET;
+
     @Value("${sns.google.token.uri}")
     private String GOOGLE_SNS_TOKEN_BASE_URI;
 
