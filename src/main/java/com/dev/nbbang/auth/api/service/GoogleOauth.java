@@ -39,6 +39,7 @@ public class GoogleOauth implements SocialOauth {
         params.put("redirect_uri", GOOGLE_SNS_CALLBACK_URI);
         params.put("grant_type", "authorization_code");
 
+
         try {
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(GOOGLE_SNS_TOKEN_BASE_URI, params, String.class);
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
