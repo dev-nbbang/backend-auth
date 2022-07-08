@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 @Slf4j
@@ -63,8 +63,8 @@ public class AuthController {
 
     }
 
-    //    @GetMapping(value = "/{socialLoginType}/login")
-    @GetMapping(value = "/{socialLoginType}/callback")
+        @GetMapping(value = "/{socialLoginType}/login")
+//    @GetMapping(value = "/{socialLoginType}/callback")
     public ResponseEntity<?> callback(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType,
                                       @RequestParam(name = "code") String code, HttpServletResponse servletResponse) {
 
