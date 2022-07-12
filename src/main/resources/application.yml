@@ -3,9 +3,9 @@ spring:
   application:
     name: nbbang-auth, common, jwt-common, member-datasource     # common 공통 프로퍼티 불러오기
   profiles:
-    active: local
+    active: prod
   config:
-    import: optional:configserver:http://localhost:8197
+    import: optional:configserver:http://129.154.222.27:8197
   rabbitmq:
     host: 129.154.222.27
     port: 5672
@@ -21,22 +21,13 @@ spring:
       enabled: true
       refresh:
         enabled: true
-#  sleuth:
-#    sampler:
-#      probability: 1.0
-#    messaging:
-#      kafka:
-#        enabled: true
-#      enabled: true
-#  zipkin:
-#    base-url: http://localhost:9411
-
 
 # 서버 설정
 server:
   port: 9100
   servlet:
     context-path: /nbbang-auth
+
 # acutator
 management:
   endpoints:
@@ -45,12 +36,11 @@ management:
         include:
           - "busrefresh"
           - "refresh"
-#    location: file:///Users/zayson/Desktop/Zayson Project/엔빵/nbbang-config.jks
 # 키스토어 복호화
-#encrypt:
-#  key-store:
-##    location: file:///home/ubuntu/nbbang/key/nbbang-config.jks
-#    password: config-access
-#    alias: nbbang-config-key
+encrypt:
+  key-store:
+    location: file:///home/ubuntu/nbbang/key/nbbang-config.jks
+    password: config-access
+    alias: nbbang-config-key
 #    location: file:///Users/zayson/Desktop/Zayson Project/엔빵/nbbang-config.jks
 
