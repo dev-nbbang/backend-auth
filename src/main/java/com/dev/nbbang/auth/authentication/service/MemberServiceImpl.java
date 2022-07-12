@@ -100,8 +100,7 @@ public class MemberServiceImpl implements MemberService {
         );
 
         // 닉네임 유효성 검증
-        System.out.println("member.getNickname() = " + member.getNickname());
-        if(!NicknameValidation.valid(member.getNickname()))
+        if(NicknameValidation.valid(member.getNickname()))
             throw new IllegalNicknameException("옳바르지 않은 닉네임입니다.", NbbangException.ILLEGAL_NICKNAME);
 
         // 2. 회원 정보 저장

@@ -15,6 +15,7 @@ import com.dev.nbbang.auth.authentication.dto.response.MemberRegisterResponse;
 import com.dev.nbbang.auth.authentication.dto.request.MemberRegisterRequest;
 import com.dev.nbbang.auth.authentication.exception.NoSuchMemberException;
 import com.dev.nbbang.auth.global.exception.ExpiredRefreshTokenException;
+import com.dev.nbbang.auth.global.exception.NbbangException;
 import com.dev.nbbang.auth.global.response.CommonResponse;
 import com.dev.nbbang.auth.global.response.CommonSuccessResponse;
 import com.dev.nbbang.auth.global.service.TokenService;
@@ -86,13 +87,15 @@ public class AuthController {
         } catch (NoSuchMemberException e) {
             log.info(e.getMessage());
             log.info("회원가입필요");
-
         }
         return ResponseEntity.ok(CommonSuccessResponse.response(false, MemberRegisterResponse.create(memberId), "회원 가입이 필요합니다."));
     }
 
     @PostMapping("/new")
     public ResponseEntity<?> signUp(@RequestBody MemberRegisterRequest request, HttpServletResponse servletResponse) {
+        if(request.getMemberId().length() < 1) {
+            throw new NoCreateMemberException("잘못된 회원아이디입니다.", NbbangException.NO_CREATE_MEMBER);
+        }
         // 요청 데이터 엔티티에 저장
         MemberDTO savedMember = memberService.saveMember(MemberRegisterRequest.toEntity(request), request.getOttId(), request.getRecommendMemberId());
 

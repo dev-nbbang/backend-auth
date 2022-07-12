@@ -47,10 +47,10 @@ management:
           - "refresh"
 #    location: file:///Users/zayson/Desktop/Zayson Project/엔빵/nbbang-config.jks
 # 키스토어 복호화
-encrypt:
-  key-store:
-#    location: file:///home/ubuntu/nbbang/key/nbbang-config.jks
-    password: config-access
-    alias: nbbang-config-key
-    location: file:///Users/zayson/Desktop/Zayson Project/엔빵/nbbang-config.jks
+#encrypt:
+#  key-store:
+##    location: file:///home/ubuntu/nbbang/key/nbbang-config.jks
+#    password: config-access
+#    alias: nbbang-config-key
+#    location: file:///Users/zayson/Desktop/Zayson Project/엔빵/nbbang-config.jks
 
