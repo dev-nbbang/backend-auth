@@ -5,11 +5,11 @@ import com.dev.nbbang.auth.global.exception.NbbangCommonException;
 import com.dev.nbbang.auth.global.exception.NbbangException;
 import org.springframework.http.HttpStatus;
 
-public class NoCreateMemberException extends NbbangCommonException {
+public class FailSocialLoginException extends NbbangCommonException {
     private final String message;
     private final NbbangException nbbangException;
 
-    public NoCreateMemberException(String message, NbbangException nbbangException) {
+    public FailSocialLoginException(String message, NbbangException nbbangException) {
         super(message);
         this.message = message;
         this.nbbangException = nbbangException;

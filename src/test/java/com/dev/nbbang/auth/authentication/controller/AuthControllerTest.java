@@ -11,6 +11,7 @@ import com.dev.nbbang.auth.authentication.exception.NoCreateMemberException;
 import com.dev.nbbang.auth.authentication.exception.NoSuchMemberException;
 import com.dev.nbbang.auth.authentication.service.MemberService;
 import com.dev.nbbang.auth.global.exception.ExpiredRefreshTokenException;
+import com.dev.nbbang.auth.global.exception.NbbangException;
 import com.dev.nbbang.auth.global.service.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -86,7 +87,7 @@ class AuthControllerTest {
     void 소셜_로그인_인가코드_생성_실패() throws Exception {
         //given
         String uri = "/auth/kakao";
-        given(socialTypeMatcher.findSocialAuthUrlByType(any())).willThrow(IllegalSocialTypeException.class);
+        given(socialTypeMatcher.findSocialAuthUrlByType(any())).willThrow(new IllegalSocialTypeException("소셜 실패", NbbangException.ILLEGAL_SOCIAL_TYPE));
 
         MockHttpServletResponse response = mvc.perform(get(uri))
                 .andExpect(status().isOk())
@@ -171,7 +172,7 @@ class AuthControllerTest {
     void 추가_회원_가입_실패() throws Exception {
         // given
         String uri = "/auth/new";
-        given(memberService.saveMember(any(), anyList(), anyString())).willThrow(NoCreateMemberException.class);
+        given(memberService.saveMember(any(), anyList(), anyString())).willThrow(new NoCreateMemberException("회원 가입 실패", NbbangException.NO_CREATE_MEMBER));
 
         //when
         MockHttpServletResponse response = mvc.perform(
@@ -242,7 +243,7 @@ class AuthControllerTest {
     void 엑세스_토큰_재발급_실패() throws Exception {
         // gien
         String uri = "/auth/reissue";
-        given(tokenService.reissueToken(anyString())).willThrow(ExpiredRefreshTokenException.class);
+        given(tokenService.reissueToken(anyString())).willThrow(new ExpiredRefreshTokenException("만료된 리프레시 토큰", NbbangException.EXPIRED_REFRESH_TOKEN));
 
         //when
         MockHttpServletResponse response = mvc.perform(get(uri)

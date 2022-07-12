@@ -1,23 +1,34 @@
 package com.dev.nbbang.auth.authentication.exception;
 
-import com.dev.nbbang.auth.global.exception.NbbangException;
 
-public class NoSuchMemberException extends RuntimeException {
+import com.dev.nbbang.auth.global.exception.NbbangCommonException;
+import com.dev.nbbang.auth.global.exception.NbbangException;
+import org.springframework.http.HttpStatus;
+
+public class NoSuchMemberException extends NbbangCommonException {
+    private final String message;
     private final NbbangException nbbangException;
 
     public NoSuchMemberException(String message, NbbangException nbbangException) {
         super(message);
+        this.message = message;
         this.nbbangException = nbbangException;
     }
 
-    public NoSuchMemberException(NbbangException nbbangException) {
-        super(nbbangException.getMessage());
-        this.nbbangException = nbbangException;
+    @Override
+    public String getErrorCode() {
+        return nbbangException.getCode();
     }
 
-    public NbbangException getNbbangException() {
-        return this.nbbangException;
+    @Override
+    public HttpStatus getHttpStatus() {
+        return HttpStatus.OK;
     }
 
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }
+
 

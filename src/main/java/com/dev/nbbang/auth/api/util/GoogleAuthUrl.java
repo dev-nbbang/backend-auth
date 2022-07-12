@@ -27,6 +27,7 @@ public class GoogleAuthUrl implements SocialAuthUrl{
         params.put("response_type", "code");
         params.put("client_id", clientId);
         params.put("redirect_uri", redirectUri);
+        params.put("access_type", "offline");
 
         String parameterString = params.entrySet().stream()
                 .map(x -> x.getKey() + "=" + x.getValue())
