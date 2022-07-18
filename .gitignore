@@ -34,6 +34,7 @@ hs_err_pid*
 .idea
 .idea/*.xml
 *.iml
+.yml
 out
 gen
 build
