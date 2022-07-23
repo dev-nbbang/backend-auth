@@ -6,8 +6,10 @@ import com.dev.nbbang.auth.api.exception.FailCreateAuthUrlException;
 import com.dev.nbbang.auth.api.exception.IllegalSocialTypeException;
 import com.dev.nbbang.auth.api.util.SocialAuthUrl;
 import com.dev.nbbang.auth.api.util.SocialTypeMatcher;
+import com.dev.nbbang.auth.authentication.dto.request.MemberAdditionalInformation;
 import com.dev.nbbang.auth.authentication.exception.DuplicateMemberIdException;
 import com.dev.nbbang.auth.authentication.exception.NoCreateMemberException;
+import com.dev.nbbang.auth.authentication.service.MemberRegisterProducer;
 import com.dev.nbbang.auth.authentication.service.MemberService;
 import com.dev.nbbang.auth.authentication.dto.MemberDTO;
 import com.dev.nbbang.auth.authentication.dto.response.MemberLoginInfoResponse;
@@ -19,6 +21,7 @@ import com.dev.nbbang.auth.global.exception.NbbangException;
 import com.dev.nbbang.auth.global.response.CommonResponse;
 import com.dev.nbbang.auth.global.response.CommonSuccessResponse;
 import com.dev.nbbang.auth.global.service.TokenService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +45,7 @@ public class AuthController {
     private final MemberService memberService;
     private final SocialTypeMatcher socialTypeMatcher;
     private final TokenService tokenService;
+    private final MemberRegisterProducer producer;
 
     @GetMapping(value = "/{socialLoginType}/test")
     public void test(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType, HttpServletResponse httpServletResponse) throws IOException {
@@ -64,7 +68,7 @@ public class AuthController {
 
     }
 
-        @GetMapping(value = "/{socialLoginType}/login")
+    @GetMapping(value = "/{socialLoginType}/login")
 //    @GetMapping(value = "/{socialLoginType}/callback")
     public ResponseEntity<?> callback(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType,
                                       @RequestParam(name = "code") String code, HttpServletResponse servletResponse) {
@@ -92,12 +96,18 @@ public class AuthController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<?> signUp(@RequestBody MemberRegisterRequest request, HttpServletResponse servletResponse) {
-        if(request.getMemberId().length() < 1) {
+    public ResponseEntity<?> signUp(@RequestBody MemberRegisterRequest request, HttpServletResponse servletResponse) throws JsonProcessingException {
+        if (request.getMemberId().length() < 1) {
             throw new NoCreateMemberException("잘못된 회원아이디입니다.", NbbangException.NO_CREATE_MEMBER);
         }
         // 요청 데이터 엔티티에 저장
         MemberDTO savedMember = memberService.saveMember(MemberRegisterRequest.toEntity(request), request.getOttId(), request.getRecommendMemberId());
+
+        // 회원 가입 이후 추가적인 정보 저장 필요 시 메세지 큐로 메세지 발행
+        if (request.getOttId().size() > 0 || request.getRecommendMemberId().length() > 0) {
+            MemberAdditionalInformation information = MemberAdditionalInformation.create(savedMember.getMemberId(), request.getRecommendMemberId(), request.getOttId());
+            producer.sendAdditionalInformation(information);
+        }
 
         // 회원 생성이 완료된 경우
         String accessToken = tokenService.manageToken(savedMember.getMemberId(), savedMember.getNickname());

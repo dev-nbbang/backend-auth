@@ -39,6 +39,6 @@ public class NbbangExceptionHandler {
     public ResponseEntity<CommonResponse> handleJsonProcessingException(JsonProcessingException e) {
         log.warn("JsonProcessing Exception");
 
-        return ResponseEntity.ok(CommonResponse.response(false, "Kafka Message Send Exception"));
+        return ResponseEntity.ok(CommonResponse.response(false, "RabbitMQ 메세지 전송 에러"));
     }
 }
