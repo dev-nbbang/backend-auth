@@ -39,3 +39,6 @@ out
 gen
 build
 rebel.xml
+
+# application.yml
+application.yml
