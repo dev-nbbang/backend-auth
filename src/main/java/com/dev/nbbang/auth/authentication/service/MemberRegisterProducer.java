@@ -24,10 +24,10 @@ public class MemberRegisterProducer {
 
     public void sendAdditionalInformation(MemberAdditionalInformation additionalInformation) throws JsonProcessingException {
         log.debug("[MEMBER REGISTER QUEUE] Auth Service -> Member Service");
-        String message = objectMapper.writeValueAsString(additionalInformation);
+//        String message = objectMapper.writeValueAsString(additionalInformation);
 
-        log.info("[MEMBER_REGISTER_QUEUE] message : " + message);
+        log.info("[MEMBER_REGISTER_QUEUE] message : " + additionalInformation);
 
-        rabbitTemplate.convertAndSend(NBBANG_EXCHANGE, MEMBER_REGISTER_ROUTING_KEY, message);
+        rabbitTemplate.convertAndSend(NBBANG_EXCHANGE, MEMBER_REGISTER_ROUTING_KEY, additionalInformation);
     }
 }
