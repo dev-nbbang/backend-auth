@@ -19,7 +19,7 @@ import java.util.Date;
 @RefreshScope
 public class JwtUtil {
     public final static long TOKEN_VALIDATION_SECOND = 1000L * 60;
-    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 *24 * 2;
+    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 5;
 
 
     @Value("${jwt.secret}")
