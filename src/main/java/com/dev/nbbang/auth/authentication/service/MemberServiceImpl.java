@@ -12,7 +12,6 @@ import com.dev.nbbang.auth.authentication.util.NicknameValidation;
 import com.dev.nbbang.auth.global.exception.NbbangException;
 import com.dev.nbbang.auth.authentication.repository.MemberRepository;
 import com.dev.nbbang.auth.global.util.RedisUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,6 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final SocialTypeMatcher socialTypeMatcher;
-    private final MemberProducer memberProducer;
     private final RedisUtil redisUtil;
 
     /**
@@ -106,16 +104,6 @@ public class MemberServiceImpl implements MemberService {
         // 2. 회원 정보 저장
         Member savedMember = Optional.of(memberRepository.save(member))
                 .orElseThrow(() -> new NoCreateMemberException("회원정보 저장에 실패했습니다.", NbbangException.NO_CREATE_MEMBER));
-//
-//        // 3. 회원 정보 저장 시 카프카 메세지 전달 동기 방식 처리?
-//        // 트랜잭션 처리 이슈 생각해봐야할듯 ...
-//        if ((!ottId.isEmpty() && savedMember.getMemberId().length() > 0) || recommendMemberId.length() > 0) {
-//            try {
-//                memberProducer.sendRecommendIdAndOttId(MemberProducer.KafkaSendRequest.create(savedMember.getMemberId(), recommendMemberId, ottId));
-//            } catch (JsonProcessingException e) {
-//                e.printStackTrace();
-//            }
-//        }
 
         // 4. 저장 완료된 경우 저장된 회원 리턴
         return MemberDTO.create(savedMember);
