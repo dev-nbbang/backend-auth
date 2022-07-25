@@ -35,7 +35,7 @@ class MemberServiceTest {
     private SocialTypeMatcher socialTypeMatcher;
 
     @Mock
-    private MemberProducer memberProducer;
+    private MemberRegisterProducer memberProducer;
 
     @InjectMocks
     private MemberServiceImpl memberService;
@@ -76,7 +76,7 @@ class MemberServiceTest {
         given(memberRepository.save(any())).willReturn(testMember());
 
         // 3. 회원 정보 저장 시 카프카 메시지 발송
-        doNothing().when(memberProducer).sendRecommendIdAndOttId(any());
+        doNothing().when(memberProducer).sendAdditionalInformation(any());
 
         // when
         MemberDTO savedMember = memberService.saveMember(testMember(), new ArrayList<>(Arrays.asList(1, 2)), "recommendId");

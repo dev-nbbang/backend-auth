@@ -1,6 +1,5 @@
 package com.dev.nbbang.auth.authentication.dto.request;
 
-import com.dev.nbbang.auth.authentication.service.MemberProducer;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
