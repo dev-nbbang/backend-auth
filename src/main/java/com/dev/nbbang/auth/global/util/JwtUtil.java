@@ -18,18 +18,19 @@ import java.util.Date;
 @RequiredArgsConstructor
 @RefreshScope
 public class JwtUtil {
-    public final static long TOKEN_VALIDATION_SECOND = 1000L * 60;
-    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 5;
+    public final static long TOKEN_VALIDATION_SECOND = 1000L * 60 * 3;
+    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 10;
 
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
     // Token 생성 메소드
-    private String generateToken(String memberId, String nickname, long expireSecond) {
+    private String generateToken(String memberId, String nickname, String authType, long expireSecond) {
         Claims claims = Jwts.claims();
         claims.put("memberId", memberId);       // JWT 토큰 페이로드에 회원 아이디 추가
         claims.put("nickname", nickname);     // JWT 토큰페이로드에 닉네임 추가
+        claims.put("auth", authType);
 
         String token = Jwts.builder()
                 .setClaims(claims)
@@ -43,12 +44,12 @@ public class JwtUtil {
 
     // RefreshToken 생성
     public String generateRefreshToken(String memberId, String nickname) {
-        return generateToken(memberId, nickname, REFRESH_TOKEN_VALIDATION_SECOND);
+        return generateToken(memberId, nickname, "refresh", REFRESH_TOKEN_VALIDATION_SECOND);
     }
 
     // AccesssToken 생성
     public String generateAccessToken(String memberId, String nickname ) {
-        return generateToken(memberId, nickname, TOKEN_VALIDATION_SECOND);
+        return generateToken(memberId, nickname, "access", TOKEN_VALIDATION_SECOND);
     }
 
     // 발췌한 payload에서 userid 추출

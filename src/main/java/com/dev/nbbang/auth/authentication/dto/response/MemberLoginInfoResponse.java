@@ -21,14 +21,16 @@ public class MemberLoginInfoResponse {
     private Grade grade;
     private Long point;
     private Long exp;
+    private String refreshToken;
 
-    public static MemberLoginInfoResponse create(MemberDTO member) {
+    public static MemberLoginInfoResponse create(MemberDTO member, String refreshToken) {
         return MemberLoginInfoResponse.builder()
                 .memberId(member.getMemberId())
                 .nickname(member.getNickname())
                 .grade(member.getGrade())
                 .point(member.getPoint())
                 .exp(member.getExp())
+                .refreshToken(refreshToken)
                 .build();
     }
 

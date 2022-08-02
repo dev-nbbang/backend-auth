@@ -7,6 +7,8 @@ import com.dev.nbbang.auth.api.exception.IllegalSocialTypeException;
 import com.dev.nbbang.auth.api.util.SocialAuthUrl;
 import com.dev.nbbang.auth.api.util.SocialTypeMatcher;
 import com.dev.nbbang.auth.authentication.dto.request.MemberAdditionalInformation;
+import com.dev.nbbang.auth.authentication.dto.request.RefreshTokenRequest;
+import com.dev.nbbang.auth.authentication.dto.response.TokenResponse;
 import com.dev.nbbang.auth.authentication.exception.DuplicateMemberIdException;
 import com.dev.nbbang.auth.authentication.exception.NoCreateMemberException;
 import com.dev.nbbang.auth.authentication.service.MemberRegisterProducer;
@@ -84,10 +86,10 @@ public class AuthController {
 
             // 회원 닉네임 수정 시 JWT 새로 생성 및 레디스 값 갱신 (프론트
             // 구현 후 넣어주기)
-            String accessToken = tokenService.manageToken(findMember.getMemberId(), findMember.getNickname());
-            servletResponse.setHeader("Authorization", "Bearer " + accessToken);
+            TokenResponse tokenResponse = tokenService.manageToken(findMember.getMemberId(), findMember.getNickname());
+            servletResponse.setHeader("Authorization", "Bearer " + tokenResponse.getAccessToken());
 
-            return ResponseEntity.ok(CommonSuccessResponse.response(true, MemberLoginInfoResponse.create(findMember), "소셜 로그인에 성공했습니다."));
+            return ResponseEntity.ok(CommonSuccessResponse.response(true, MemberLoginInfoResponse.create(findMember, tokenResponse.getRefreshToken()), "소셜 로그인에 성공했습니다."));
         } catch (NoSuchMemberException e) {
             log.info(e.getMessage());
             log.info("회원가입필요");
@@ -110,26 +112,27 @@ public class AuthController {
         }
 
         // 회원 생성이 완료된 경우
-        String accessToken = tokenService.manageToken(savedMember.getMemberId(), savedMember.getNickname());
-        servletResponse.setHeader("Authorization", "Bearer " + accessToken);
+        TokenResponse tokenResponse = tokenService.manageToken(savedMember.getMemberId(), savedMember.getNickname());
+        servletResponse.setHeader("Authorization", "Bearer " + tokenResponse.getAccessToken());
         log.info("redis 저장 완료");
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(CommonSuccessResponse.response(true, MemberLoginInfoResponse.create(savedMember), "회원가입에 성공했습니다."));
+                .body(CommonSuccessResponse.response(true, MemberLoginInfoResponse.create(savedMember, tokenResponse.getRefreshToken()), "회원가입에 성공했습니다."));
 
     }
 
-    @GetMapping("/reissue")
-    public ResponseEntity<?> reissueJwtToken(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+    @PostMapping("/reissue")
+    public ResponseEntity<?> reissueJwtToken(HttpServletRequest servletRequest, HttpServletResponse servletResponse, @RequestBody RefreshTokenRequest refreshTokenRequest) {
         log.info("[Nbbang Auth Controller] 엑세스 토큰 만료로 인한 재발급 요청");
         // 엑세스 토큰 파싱
         String accessToken = servletRequest.getHeader("Authorization").substring(7);
+        String refreshToken = refreshTokenRequest.getRefreshToken();
 
         // 리프레시 토큰 확인 후 재발급 혹은 재로그인 요창
-        String newAccessToken = tokenService.reissueToken(accessToken);
+        TokenResponse newAccessToken = tokenService.reissueToken(accessToken, refreshToken);
 
         // 헤더에 새로운 엑세스 토큰 발급
-        servletResponse.setHeader("Authorization", "Bearer " + newAccessToken);
+        servletResponse.setHeader("Authorization", "Bearer " + newAccessToken.getAccessToken());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
