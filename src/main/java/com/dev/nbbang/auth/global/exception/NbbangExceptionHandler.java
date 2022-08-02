@@ -24,7 +24,7 @@ public class NbbangExceptionHandler {
         log.warn("Nbbang Exception Code : {} ", e.getErrorCode());
         log.warn("Nbbang Exception Message : {}", e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.response(false, e.getMessage()));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(CommonResponse.response(false, e.getMessage()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

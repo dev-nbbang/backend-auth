@@ -6,6 +6,7 @@ import com.dev.nbbang.auth.api.util.SocialAuthUrl;
 import com.dev.nbbang.auth.api.util.SocialTypeMatcher;
 import com.dev.nbbang.auth.authentication.dto.MemberDTO;
 import com.dev.nbbang.auth.authentication.dto.request.MemberRegisterRequest;
+import com.dev.nbbang.auth.authentication.dto.response.TokenResponse;
 import com.dev.nbbang.auth.authentication.entity.Grade;
 import com.dev.nbbang.auth.authentication.exception.NoCreateMemberException;
 import com.dev.nbbang.auth.authentication.exception.NoSuchMemberException;
@@ -125,7 +126,7 @@ class AuthControllerTest {
         String uri = "/auth/kakao/callback";
         given(memberService.socialLogin(any(), anyString())).willReturn("testId");
         given(memberService.findMember(anyString())).willReturn(testMemberDTO());
-        given(tokenService.manageToken(anyString(), anyString())).willReturn("testToken");
+        given(tokenService.manageToken(anyString(), anyString())).willReturn(tokenResponse());
 
         //when
         MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders
@@ -195,7 +196,7 @@ class AuthControllerTest {
         // given
         String uri = "/auth/new";
         given(memberService.saveMember(any(), anyList(), anyString())).willReturn(testMemberDTO());
-        given(tokenService.manageToken(anyString(), anyString())).willReturn("new Token");
+//        given(tokenService.manageToken(anyString(), anyString())).willReturn("new Token");
 
 
         //when
@@ -224,7 +225,7 @@ class AuthControllerTest {
     void 엑세스_토큰_재발급_성공() throws Exception {
         // given
         String uri = "/auth/reissue";
-        given(tokenService.reissueToken(anyString())).willReturn("new token");
+        given(tokenService.reissueToken(anyString(), anyString())).willReturn(tokenResponse());
 
         //when
         MockHttpServletResponse response = mvc.perform(get(uri)
@@ -243,7 +244,7 @@ class AuthControllerTest {
     void 엑세스_토큰_재발급_실패() throws Exception {
         // gien
         String uri = "/auth/reissue";
-        given(tokenService.reissueToken(anyString())).willThrow(new ExpiredRefreshTokenException("만료된 리프레시 토큰", NbbangException.EXPIRED_REFRESH_TOKEN));
+        given(tokenService.reissueToken(anyString(), anyString())).willThrow(new ExpiredRefreshTokenException("만료된 리프레시 토큰", NbbangException.EXPIRED_REFRESH_TOKEN));
 
         //when
         MockHttpServletResponse response = mvc.perform(get(uri)
@@ -263,6 +264,10 @@ class AuthControllerTest {
                 .exp(0L)
                 .point(0L)
                 .build();
+    }
+
+    private static TokenResponse tokenResponse() {
+        return TokenResponse.create("test", "test");
     }
 
     private static MemberRegisterRequest testRegisterMember() {
