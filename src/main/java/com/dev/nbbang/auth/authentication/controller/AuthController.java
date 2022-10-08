@@ -49,15 +49,6 @@ public class AuthController {
     private final TokenService tokenService;
     private final MemberRegisterProducer producer;
 
-    @GetMapping(value = "/{socialLoginType}/test")
-    public void test(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType, HttpServletResponse httpServletResponse) throws IOException {
-        SocialAuthUrl socialAuthUrl = socialTypeMatcher.findSocialAuthUrlByType(socialLoginType);
-        String authUrl = socialAuthUrl.makeAuthorizationUrl();
-
-        System.out.println("authUrl = " + authUrl);
-        httpServletResponse.sendRedirect(authUrl);
-    }
-
     @GetMapping(value = "/{socialLoginType}")
     public ResponseEntity<?> socialLoginType(@PathVariable(name = "socialLoginType") SocialLoginType socialLoginType) {
         log.info(">> 사용자로부터 SNS 로그인 요청을 받음 :: {} Social Login", socialLoginType);
