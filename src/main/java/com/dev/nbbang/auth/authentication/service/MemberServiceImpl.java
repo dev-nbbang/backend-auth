@@ -39,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
         final String REFRESH_TOKEN_EXPIRES = "refresh_token_expires_in";        // 카카오 리프레시토큰 만료시간 키
         try {
             // 1. 소셜 로그인 타입 매칭
-                SocialOauth socialOauth = socialTypeMatcher.findSocialOauthByType(socialLoginType);
+            SocialOauth socialOauth = socialTypeMatcher.findSocialOauthByType(socialLoginType);
 
             // 2. 토큰 발급
             Map<String, Object> tokenResponse = socialOauth.requestAccessToken(code);
